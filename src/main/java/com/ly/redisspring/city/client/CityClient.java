@@ -14,7 +14,6 @@ public class CityClient {
 
     public CityClient(@Value("${city.service.url}") String url) {
         this.webClient = WebClient.builder().baseUrl(url).build();
-
     }
 
     public Mono<City> getCity(final String zipCode){
