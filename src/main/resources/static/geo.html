@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)https://vins-udemy.s3.amazonaws.com/redis/geo-template.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Required meta tags -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="../../../../Restaurant%20Locator_files/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="../../../../Restaurant%20Locator_files/polyfill.min.js.download"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    
+    <!------------------------------------------------------->
+
+    <title>Restaurant Locator</title>
+
+  </head>
+
+  <body style="background-color: #E5E7E9;">
+  
+    <div class="container mt-5">
+        <h2>Restaurant Locator</h2>
+        
+        <form>
+        <!-- Enter zip and click search ------>
+        <div class="row">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Enter the zip code" id="zip">
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-primary form-control" id="search">Search</button>
+          </div>
+            <div id="map" class="mt-5" style="height: 500px; width: 500px"></div>
+        </div>
+      </form>
+
+
+    </div>
+
+
+    <script type="text/javascript">
+        let map;
+
+        async function initMap() {
+
+            // The location of Uluru
+            const uluru = {lat: -25.344, lng: 131.031};
+            // Request needed libraries.
+            //@ts-ignore
+            const {Map} = await google.maps.importLibrary("maps");
+            const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+
+            // The map, centered at Uluru
+            map = new Map(document.getElementById("map"), {
+                zoom: 4,
+                center: uluru,
+                mapId: "DEMO_MAP_ID",
+            });
+
+            // The marker, positioned at Uluru
+            const marker = new AdvancedMarkerElement({
+                map: map,
+                position: uluru,
+                title: "Uluru",
+            });
+
+            const updateMap = async () => {
+                const zip = document.getElementById('zip').value;
+                const uri = `http://localhost:8080/geo/${zip}`;
+                const response = await fetch(uri);
+                const arr = await response.json();
+
+                if (arr.length > 0) {
+                    map.zoom = 12;
+                    map.center({
+                        lat: arr[0].latitude,
+                        lng: arr[0].longitude,
+                    })
+                }
+                arr.forEach(r => {
+                    new AdvancedMarkerElement({
+                        position: uluru,
+                        map: map,
+                        title: r.name,
+                    });
+                })
+            }
+            document.getElementById("search").addEventListener('click', updateMap);
+        }
+        initMap();
+
+    </script>
+
+    <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+    ({key: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg", v: "beta"});
+    </script>
+
+
+    <!------------------------------------------------------->
+
+    <script src="../../../../Restaurant%20Locator_files/bootstrap.bundle.min.js.download" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  
+</body></html>

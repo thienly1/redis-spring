@@ -48,7 +48,7 @@ public class CityService {
                 .onErrorResume(ex ->this.cityClient.getCity(zipCode)
                 );
     }
-    @Scheduled(fixedRate = 10_000)
+ //   @Scheduled(fixedRate = 10_000)  //comment out to turn off city part to check other parts.
     public void updateCity(){
         this.cityClient.getAll()
                 .collectList()
